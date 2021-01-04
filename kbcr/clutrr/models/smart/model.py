@@ -63,7 +63,7 @@ class Hoppy(nn.Module):
               rel: Tensor,
               arg1: Tensor,
               arg2: Tensor,
-              facts: List[Tensor]) -> Tensor:
+               facts: List[Tensor]) -> Tensor:
         return self.r_score(rel, arg1, arg2, facts, depth=self.depth)
 
     def r_score(self,

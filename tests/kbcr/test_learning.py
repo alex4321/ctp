@@ -40,9 +40,9 @@ def test_learning_v1():
     entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
     predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-    fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-    fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-    fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+    fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+    fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+    fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
     facts = [fact_rel, fact_arg1, fact_arg2]
 
     for st in ['min', 'concat']:
@@ -57,9 +57,9 @@ def test_learning_v1():
                     xo_np = np.array([entity_to_index[o]])
 
                     with torch.no_grad():
-                        xs = torch.from_numpy(xs_np)
-                        xp = torch.from_numpy(xp_np)
-                        xo = torch.from_numpy(xo_np)
+                        xs = torch.LongTensor(xs_np)
+                        xp = torch.LongTensor(xp_np)
+                        xo = torch.LongTensor(xo_np)
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)
@@ -100,9 +100,9 @@ def test_learning_v2():
     entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
     predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-    fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-    fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-    fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+    fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+    fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+    fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
     facts = [fact_rel, fact_arg1, fact_arg2]
 
     model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
@@ -117,9 +117,9 @@ def test_learning_v2():
         xo_np = np.array([entity_to_index[o]])
 
         with torch.no_grad():
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -157,9 +157,9 @@ def test_learning_v3():
     entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
     predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-    fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-    fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-    fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+    fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+    fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+    fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
     facts = [fact_rel, fact_arg1, fact_arg2]
 
     model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
@@ -175,9 +175,9 @@ def test_learning_v3():
 
     loss_function = nn.CrossEntropyLoss(reduction='mean')
 
-    p_emb = predicate_embeddings(torch.from_numpy(np.array([predicate_to_index['p']])))
-    q_emb = predicate_embeddings(torch.from_numpy(np.array([predicate_to_index['q']])))
-    # r_emb = predicate_embeddings(torch.from_numpy(np.array([predicate_to_index['r']])))
+    p_emb = predicate_embeddings(torch.LongTensor(np.array([predicate_to_index['p']])))
+    q_emb = predicate_embeddings(torch.LongTensor(np.array([predicate_to_index['q']])))
+    # r_emb = predicate_embeddings(torch.LongTensor(np.array([predicate_to_index['r']])))
 
     optimizer = optim.Adagrad(params, lr=0.1)
 
@@ -200,9 +200,9 @@ def test_learning_v3():
         xp_np = np.array([predicate_to_index[p] for p in p_lst])
         xo_np = np.array([entity_to_index[o] for o in o_lst])
 
-        xs = torch.from_numpy(xs_np)
-        xp = torch.from_numpy(xp_np)
-        xo = torch.from_numpy(xo_np)
+        xs = torch.LongTensor(xs_np)
+        xp = torch.LongTensor(xp_np)
+        xo = torch.LongTensor(xo_np)
 
         xs_emb = entity_embeddings(xs)
         xp_emb = predicate_embeddings(xp)

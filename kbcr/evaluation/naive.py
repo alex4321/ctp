@@ -64,9 +64,9 @@ def evaluate_naive(entity_embeddings: nn.Embedding,
             x_sub, x_pred, x_obj = batch[:, 0], batch[:, 1], batch[:, 2]
 
             with torch.no_grad():
-                tensor_xs = torch.from_numpy(x_sub).to(device)
-                tensor_xp = torch.from_numpy(x_pred).to(device)
-                tensor_xo = torch.from_numpy(x_obj).to(device)
+                tensor_xs = torch.LongTensor(x_sub).to(device)
+                tensor_xp = torch.LongTensor(x_pred).to(device)
+                tensor_xo = torch.LongTensor(x_obj).to(device)
 
                 tensor_xs_emb = entity_embeddings(tensor_xs)
                 tensor_xp_emb = predicate_embeddings(tensor_xp)

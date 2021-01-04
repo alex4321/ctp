@@ -33,9 +33,9 @@ def test_distmult_v1():
 
             model = DistMult(entity_embeddings)
 
-            xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-            xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-            xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+            xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+            xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+            xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -75,9 +75,9 @@ def test_complex_v1():
 
             model = ComplEx(entity_embeddings)
 
-            xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-            xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-            xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+            xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+            xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+            xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -119,9 +119,9 @@ def test_neuralkb_v1():
                 entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
                 predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-                fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-                fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-                fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+                fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+                fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+                fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
                 facts = [fact_rel, fact_arg1, fact_arg2]
 
                 model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
@@ -139,9 +139,9 @@ def test_neuralkb_v1():
                 xp_np[1] = 1
                 xo_np[1] = 3
 
-                xs = torch.from_numpy(xs_np)
-                xp = torch.from_numpy(xp_np)
-                xo = torch.from_numpy(xo_np)
+                xs = torch.LongTensor(xs_np)
+                xp = torch.LongTensor(xp_np)
+                xo = torch.LongTensor(xo_np)
 
                 xs_emb = entity_embeddings(xs)
                 xp_emb = predicate_embeddings(xp)
@@ -188,9 +188,9 @@ def test_hoppy_v1():
 
                     model = SimpleHoppy(base, entity_embeddings, hops=reformulator)
 
-                    xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-                    xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-                    xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+                    xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+                    xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+                    xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
                     xs_emb = entity_embeddings(xs)
                     xp_emb = predicate_embeddings(xp)
@@ -238,9 +238,9 @@ def test_rhoppy_v1():
                                                hops=reformulator,
                                                depth=depth)
 
-                        xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-                        xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-                        xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+                        xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+                        xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+                        xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)
@@ -296,9 +296,9 @@ def test_multirhoppy_v1():
                                       hops_lst=hops_lst,
                                       depth=depth)
 
-                        xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-                        xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-                        xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+                        xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+                        xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+                        xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)

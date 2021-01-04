@@ -35,7 +35,7 @@ class NeuralKB(nn.Module):
         self.index_count = 0
 
     def to_tnsr(self, x: np.ndarray) -> Tensor:
-        res = torch.from_numpy(x)
+        res = torch.LongTensor(x)
         if self.device is not None:
             res = res.to(self.device)
         return res
@@ -44,9 +44,6 @@ class NeuralKB(nn.Module):
                   rel: Tensor, arg1: Optional[Tensor], arg2: Optional[Tensor],
                   fact_rel: Tensor, fact_arg1: Tensor, fact_arg2: Tensor,
                   is_spo: bool = False) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]:
-
-        # print(fact_rel.shape, fact_arg1.shape, fact_arg2.shape)
-
         k = min(self.k, fact_rel.shape[0])
         res_sp, res_po, res_spo = None, None, None
 

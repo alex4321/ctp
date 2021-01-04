@@ -35,7 +35,7 @@ class NeuralKB(nn.Module):
         self.index_count = 0
 
     def to_tnsr(self, x: np.ndarray) -> Tensor:
-        res = torch.from_numpy(x)
+        res = torch.LongTensor(x)
         if self.device is not None:
             res = res.to(self.device)
         return res

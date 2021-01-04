@@ -41,15 +41,15 @@ def test_reasoning_v1():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+            indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
             reformulator = SymbolicReformulator(predicate_embeddings, indices)
             hoppy = SimpleHoppy(model, entity_embeddings, hops=reformulator)
 
@@ -69,9 +69,9 @@ def test_reasoning_v1():
             xp_np[2] = 2
             xo_np[2] = 2
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -135,15 +135,15 @@ def test_reasoning_v2():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'],
+            indices = torch.LongTensor(np.array([predicate_to_index['p'],
                                                  predicate_to_index['q'],
                                                  predicate_to_index['r']]))
             reformulator = SymbolicReformulator(predicate_embeddings, indices)
@@ -165,9 +165,9 @@ def test_reasoning_v2():
             xp_np[2] = 2
             xo_np[2] = 3
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -232,15 +232,15 @@ def test_reasoning_v3():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'],
+            indices = torch.LongTensor(np.array([predicate_to_index['p'],
                                                  predicate_to_index['q'],
                                                  predicate_to_index['r'],
                                                  predicate_to_index['s']]))
@@ -263,9 +263,9 @@ def test_reasoning_v3():
             xp_np[2] = 3
             xo_np[2] = 4
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -327,15 +327,15 @@ def test_reasoning_v4():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'],
+            indices = torch.LongTensor(np.array([predicate_to_index['p'],
                                                  predicate_to_index['q'],
                                                  predicate_to_index['r'],
                                                  predicate_to_index['s']]))
@@ -358,9 +358,9 @@ def test_reasoning_v4():
             xp_np[2] = 3
             xo_np[2] = 4
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -428,15 +428,15 @@ def test_reasoning_v5():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'],
+            indices = torch.LongTensor(np.array([predicate_to_index['p'],
                                                  predicate_to_index['q'],
                                                  predicate_to_index['r'],
                                                  predicate_to_index['s']]))
@@ -460,9 +460,9 @@ def test_reasoning_v5():
             xp_np[2] = 3
             xo_np[2] = 4
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -553,15 +553,15 @@ def test_reasoning_v6():
             entity_embeddings = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
             predicate_embeddings = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-            fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-            fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-            fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+            fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+            fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+            fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
             facts = [fact_rel, fact_arg1, fact_arg2]
 
             model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
                              kernel=kernel, facts=facts, scoring_type=st)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'],
+            indices = torch.LongTensor(np.array([predicate_to_index['p'],
                                                  predicate_to_index['q']]))
             reformulator = SymbolicReformulator(predicate_embeddings, indices)
 
@@ -617,9 +617,9 @@ def test_reasoning_v6():
             # xp_np[9] = predicate_to_index['r']
             # xo_np[9] = entity_to_index['w']
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)

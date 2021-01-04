@@ -42,9 +42,9 @@ def test_masking_v1():
                     entity_embeddings.weight.data *= init_size
                     predicate_embeddings.weight.data *= init_size
 
-                    fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-                    fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-                    fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+                    fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+                    fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+                    fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
                     facts = [fact_rel, fact_arg1, fact_arg2]
 
                     model = NeuralKB(entity_embeddings=entity_embeddings, predicate_embeddings=predicate_embeddings,
@@ -63,10 +63,10 @@ def test_masking_v1():
                     xp_np[1] = 1
                     xo_np[1] = 3
 
-                    xs = torch.from_numpy(xs_np)
-                    xp = torch.from_numpy(xp_np)
-                    xo = torch.from_numpy(xo_np)
-                    xi = torch.from_numpy(xi_np)
+                    xs = torch.LongTensor(xs_np)
+                    xp = torch.LongTensor(xp_np)
+                    xo = torch.LongTensor(xo_np)
+                    xi = torch.LongTensor(xi_np)
 
                     xs_emb = entity_embeddings(xs)
                     xp_emb = predicate_embeddings(xp)
@@ -120,15 +120,15 @@ def test_masking_v2():
                     entity_emb = nn.Embedding(nb_entities, embedding_size * 2, sparse=True)
                     predicate_emb = nn.Embedding(nb_predicates, embedding_size * 2, sparse=True)
 
-                    fact_rel = torch.from_numpy(np.array([predicate_to_index[p] for (_, p, _) in triples]))
-                    fact_arg1 = torch.from_numpy(np.array([entity_to_index[s] for (s, _, _) in triples]))
-                    fact_arg2 = torch.from_numpy(np.array([entity_to_index[o] for (_, _, o) in triples]))
+                    fact_rel = torch.LongTensor(np.array([predicate_to_index[p] for (_, p, _) in triples]))
+                    fact_arg1 = torch.LongTensor(np.array([entity_to_index[s] for (s, _, _) in triples]))
+                    fact_arg2 = torch.LongTensor(np.array([entity_to_index[o] for (_, _, o) in triples]))
                     facts = [fact_rel, fact_arg1, fact_arg2]
 
                     base = NeuralKB(entity_embeddings=entity_emb, predicate_embeddings=predicate_emb,
                                     kernel=kernel, facts=facts, scoring_type=st)
 
-                    indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+                    indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
                     reformulator = SymbolicReformulator(predicate_emb, indices)
                     model = SimpleHoppy(base, entity_emb, hops=reformulator)
 
@@ -149,10 +149,10 @@ def test_masking_v2():
                     xp_np[2] = 0
                     xo_np[2] = 2
 
-                    xs = torch.from_numpy(xs_np)
-                    xp = torch.from_numpy(xp_np)
-                    xo = torch.from_numpy(xo_np)
-                    xi = torch.from_numpy(xi_np)
+                    xs = torch.LongTensor(xs_np)
+                    xp = torch.LongTensor(xp_np)
+                    xo = torch.LongTensor(xo_np)
+                    xi = torch.LongTensor(xi_np)
 
                     xs_emb = entity_emb(xs)
                     xp_emb = predicate_emb(xp)

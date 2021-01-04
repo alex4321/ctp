@@ -47,9 +47,9 @@ def test_multi():
 
                         model = Multi(models=models, pooling_type=pt, embedding_size=embedding_size * 2)
 
-                        xs = torch.from_numpy(rs.randint(nb_entities, size=32))
-                        xp = torch.from_numpy(rs.randint(nb_predicates, size=32))
-                        xo = torch.from_numpy(rs.randint(nb_entities, size=32))
+                        xs = torch.LongTensor(rs.randint(nb_entities, size=32))
+                        xp = torch.LongTensor(rs.randint(nb_predicates, size=32))
+                        xo = torch.LongTensor(rs.randint(nb_entities, size=32))
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)

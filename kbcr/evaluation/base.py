@@ -67,9 +67,9 @@ def evaluate(entity_embeddings: nn.Embedding,
         counter += batch_size * 2
 
         with torch.no_grad():
-            tensor_xs = torch.from_numpy(batch_xs).to(device)
-            tensor_xp = torch.from_numpy(batch_xp).to(device)
-            tensor_xo = torch.from_numpy(batch_xo).to(device)
+            tensor_xs = torch.LongTensor(batch_xs).to(device)
+            tensor_xp = torch.LongTensor(batch_xp).to(device)
+            tensor_xo = torch.LongTensor(batch_xo).to(device)
 
             tensor_xs_emb = entity_embeddings(tensor_xs)
             tensor_xp_emb = predicate_embeddings(tensor_xp)

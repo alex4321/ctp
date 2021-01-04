@@ -14,17 +14,35 @@ def test_clutrr_cli_v1():
     env = os.environ.copy()
     env['PYTHONPATH'] = '.'
 
-    cmd_str = 'python3 ./bin/clutrr-cli.py --train data/clutrr-emnlp/data_d83ecc3e/1.3_test.csv -s concat -V 128 ' \
-              '-b 8 -d 2 --test-max-depth 2 --hops 2 2 -e 1 -m 3 -t min -k 20 -i 1.0 -r linear -R 0 --debug'
-
-    cmd = cmd_str.split()
+    cmd = [
+        sys.executable,
+        './bin/clutrr-cli.py',
+        '--train', 'data/clutrr-emnlp/data_d83ecc3e/1.3_test.csv',
+        '-s', 'concat',
+        '-V', '128',
+        '-b', '8',
+        '-d', '2',
+        '--test-max-depth', '2',
+        '--hops', '2', '2',
+        '-e', '1',
+        '-m', '3',
+        '-t', 'min',
+        '-k', '20',
+        '-i', '1.0',
+        '-r', 'linear',
+        '-R', '0',
+        '--debug'
+    ]
 
     p = subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
+    out_str = out.decode("utf-8")
+    err_str = err.decode("utf-8")
+    assert p.returncode == 0, f"Process exited with {p.returncode} code\nOutput: {out_str}\nError: {err_str}"
 
     sys.stdout = sys.stderr
 
-    lines = out.decode("utf-8").split("\n")
+    lines = out_str.split("\n")
 
     sanity_check_flag_1 = False
 
@@ -44,7 +62,7 @@ def test_clutrr_cli_v1():
 
             sanity_check_flag_1 = True
 
-    assert sanity_check_flag_1
+    assert sanity_check_flag_1, f"Process had wrong output.\nOutput: {out_str}\nError: {err_str}"
 
 
 if __name__ == '__main__':
