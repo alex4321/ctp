@@ -26,7 +26,7 @@ def encode_relation(facts: List[Tuple[str, str, str]],
                     relation_to_idx: Dict[str, int],
                     device: Optional[torch.device] = None) -> Tensor:
     indices_np = np.array([relation_to_idx[r] for _, r, _ in facts], dtype=np.int64)
-    indices = torch.from_numpy(indices_np)
+    indices = torch.LongTensor(indices_np)
     if device is not None:
         indices = indices.to(device)
     return relation_embeddings(indices)
@@ -37,7 +37,7 @@ def encode_arguments(facts: List[Tuple[str, str, str]],
                      entity_to_idx: Dict[str, int],
                      device: Optional[torch.device] = None) -> Tuple[Tensor, Tensor]:
     indices_np = np.array([[entity_to_idx[s], entity_to_idx[o]] for s, _, o in facts], dtype=np.int64)
-    indices = torch.from_numpy(indices_np)
+    indices = torch.LongTensor(indices_np)
     if device is not None:
         indices = indices.to(device)
     emb = entity_embeddings(indices)
@@ -78,9 +78,9 @@ def test_smart_clutrr_v1():
                     xo_np = np.array([entity_to_index[o]])
 
                     with torch.no_grad():
-                        xs = torch.from_numpy(xs_np)
-                        xp = torch.from_numpy(xp_np)
-                        xo = torch.from_numpy(xo_np)
+                        xs = torch.LongTensor(xs_np)
+                        xp = torch.LongTensor(xp_np)
+                        xo = torch.LongTensor(xo_np)
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)
@@ -127,7 +127,7 @@ def test_smart_clutrr_v2():
     for scoring_type in ['concat']:
         model = NeuralKB(kernel=kernel)
 
-        indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+        indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
         _hops = SymbolicReformulator(predicate_embeddings, indices)
         hoppy = Hoppy(model, hops_lst=[(_hops, False)], depth=1)
 
@@ -139,9 +139,9 @@ def test_smart_clutrr_v2():
                     xo_np = np.array([entity_to_index[o]])
 
                     with torch.no_grad():
-                        xs = torch.from_numpy(xs_np)
-                        xp = torch.from_numpy(xp_np)
-                        xo = torch.from_numpy(xo_np)
+                        xs = torch.LongTensor(xs_np)
+                        xp = torch.LongTensor(xp_np)
+                        xo = torch.LongTensor(xo_np)
 
                         xs_emb = entity_embeddings(xs)
                         xp_emb = predicate_embeddings(xp)
@@ -157,7 +157,7 @@ def test_smart_clutrr_v2():
                         inf = hoppy.score(xp_emb, xs_emb, xo_emb, facts=facts)
                         inf_np = inf.cpu().numpy()
 
-                        print(s, p, o, inf_np)
+                        # print(s, p, o, inf_np)
                         assert inf_np[0] > 0.9 if (s, p, o) in (triples + xxx) else inf_np[0] < 0.1
 
 
@@ -197,8 +197,8 @@ def test_smart_clutrr_v3():
               if not torch.equal(p, entity_embeddings.weight)
               and not torch.equal(p, predicate_embeddings.weight)]
 
-    for tensor in params:
-        print(f'\t{tensor.size()}\t{tensor.device}')
+    # for tensor in params:
+    #     print(f'\t{tensor.size()}\t{tensor.device}')
 
     loss_function = nn.BCELoss()
 
@@ -213,8 +213,8 @@ def test_smart_clutrr_v3():
     rs = np.random.RandomState()
 
     c, d = 0.0, 0.0
-    p_emb = predicate_embeddings(torch.from_numpy(np.array([predicate_to_index['p']])))
-    q_emb = predicate_embeddings(torch.from_numpy(np.array([predicate_to_index['q']])))
+    p_emb = predicate_embeddings(torch.LongTensor(np.array([predicate_to_index['p']])))
+    q_emb = predicate_embeddings(torch.LongTensor(np.array([predicate_to_index['q']])))
 
     for batch_start, batch_end in batches:
         hops_batch = hops_data[batch_start:batch_end]
@@ -235,9 +235,9 @@ def test_smart_clutrr_v3():
         xp_np = np.array([predicate_to_index[p] for p in p_lst + p_n_lst])
         xo_np = np.array([entity_to_index[o] for o in o_lst] + o_n_lst)
 
-        xs_emb = entity_embeddings(torch.from_numpy(xs_np))
-        xp_emb = predicate_embeddings(torch.from_numpy(xp_np))
-        xo_emb = entity_embeddings(torch.from_numpy(xo_np))
+        xs_emb = entity_embeddings(torch.LongTensor(xs_np))
+        xp_emb = predicate_embeddings(torch.LongTensor(xp_np))
+        xo_emb = entity_embeddings(torch.LongTensor(xo_np))
 
         rel_emb = encode_relation(facts=triples,
                                   relation_embeddings=predicate_embeddings,
@@ -253,7 +253,7 @@ def test_smart_clutrr_v3():
 
         labels_np = np.zeros(xs_np.shape[0])
         labels_np[:nb_positives] = 1
-        labels = torch.from_numpy(labels_np).float()
+        labels = torch.LongTensor(labels_np).float()
 
         loss = loss_function(scores, labels)
 
@@ -263,7 +263,7 @@ def test_smart_clutrr_v3():
         c = kernel.pairwise(p_emb, hop_1_emb).mean().cpu().detach().numpy()
         d = kernel.pairwise(q_emb, hop_2_emb).mean().cpu().detach().numpy()
 
-        print(c, d)
+        # print(c, d)
 
         loss.backward()
         optimizer.step()
@@ -330,15 +330,15 @@ def test_smart_clutrr_v4():
             xp_np[1] = 1
             xo_np[1] = 3
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
             xo_emb = entity_embeddings(xo)
 
-            print('xp_emb', xp_emb.shape)
+            # print('xp_emb', xp_emb.shape)
 
             res_sp, res_po = model.forward(xp_emb, xs_emb, xo_emb, facts=facts)
             inf = model.score(xp_emb, xs_emb, xo_emb, facts=facts)
@@ -349,15 +349,15 @@ def test_smart_clutrr_v4():
             scores_sp, emb_sp = res_sp
             scores_po, emb_po = res_po
 
-            print(scores_sp.shape, emb_sp.shape)
-            print(scores_po.shape, emb_po.shape)
+            # print(scores_sp.shape, emb_sp.shape)
+            # print(scores_po.shape, emb_po.shape)
 
             inf = inf.cpu().numpy()
             scores_sp = scores_sp.cpu().numpy()
             scores_po = scores_po.cpu().numpy()
 
-            print('AAA', inf)
-            print('BBB', scores_sp)
+            # print('AAA', inf)
+            # print('BBB', scores_sp)
 
 
 @pytest.mark.light
@@ -424,7 +424,7 @@ def test_smart_clutrr_v5():
 
         model = NeuralKB(kernel=kernel, k=k)
 
-        indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+        indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
         reformulator = SymbolicReformulator(predicate_embeddings, indices)
 
         hoppy0 = Hoppy(model, hops_lst=[(reformulator, False), (reformulator, False)], depth=0)
@@ -477,9 +477,9 @@ def test_smart_clutrr_v5():
         # xp_np[9] = predicate_to_index['r']
         # xo_np[9] = entity_to_index['w']
 
-        xs = torch.from_numpy(xs_np)
-        xp = torch.from_numpy(xp_np)
-        xo = torch.from_numpy(xo_np)
+        xs = torch.LongTensor(xs_np)
+        xp = torch.LongTensor(xp_np)
+        xo = torch.LongTensor(xo_np)
 
         xs_emb = entity_embeddings(xs)
         xp_emb = predicate_embeddings(xp)
@@ -500,11 +500,11 @@ def test_smart_clutrr_v5():
         scores4 = hoppy4.forward(xp_emb, xs_emb, xo_emb, facts=facts)
         inf4 = hoppy4.score(xp_emb, xs_emb, xo_emb, facts=facts)
 
-        print(inf0)
-        print(inf1)
-        print(inf2)
-        print(inf3)
-        print(inf4)
+        print("INF0", inf0)
+        print("INF1", inf1)
+        print("INF2", inf2)
+        print("INF3", inf3)
+        print("INF4", inf4)
 
         inf0_np = inf0.cpu().numpy()
         inf1_np = inf1.cpu().numpy()
@@ -584,7 +584,7 @@ def test_smart_clutrr_v6():
 
             model = NeuralKB(kernel=kernel, k=k)
 
-            indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+            indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
             reformulator = SymbolicReformulator(predicate_embeddings, indices)
 
             hoppy0 = Hoppy(model, hops_lst=[(reformulator, False)], depth=0)
@@ -633,9 +633,9 @@ def test_smart_clutrr_v6():
             xp_np[8] = predicate_to_index['r']
             xo_np[8] = entity_to_index['u']
 
-            xs = torch.from_numpy(xs_np)
-            xp = torch.from_numpy(xp_np)
-            xo = torch.from_numpy(xo_np)
+            xs = torch.LongTensor(xs_np)
+            xp = torch.LongTensor(xp_np)
+            xo = torch.LongTensor(xo_np)
 
             xs_emb = entity_embeddings(xs)
             xp_emb = predicate_embeddings(xp)
@@ -664,10 +664,10 @@ def test_smart_clutrr_v6():
             # scores4 = hoppy4.forward(xp_emb, xs_emb, xo_emb, facts=facts)
             # inf4 = hoppy4.score(xp_emb, xs_emb, xo_emb, facts=facts)
 
-            print(inf0)
-            print(inf1)
-            print(inf2)
-            print(inf3)
+            # print(inf0)
+            # print(inf1)
+            # print(inf2)
+            # print(inf3)
             # print(inf4)
 
             inf0_np = inf0.cpu().numpy()
@@ -696,19 +696,19 @@ def test_smart_clutrr_v6():
             subs2_po_np = subs2_po.cpu().numpy()
             subs3_po_np = subs3_po.cpu().numpy()
 
-            print(scores0_sp_np.shape)
-            print(scores1_sp_np.shape)
-            print(scores2_sp_np.shape)
-            print(scores3_sp_np.shape)
-
-            print(scores1_sp_np)
+            # print(scores0_sp_np.shape)
+            # print(scores1_sp_np.shape)
+            # print(scores2_sp_np.shape)
+            # print(scores3_sp_np.shape)
+            #
+            # print(scores1_sp_np)
 
             for i, (s_idx, p_idx, o_idx) in enumerate(zip(xs_np, xp_np, xo_np)):
                 if i < 4:
                     s1, s2 = scores1_sp_np[i, 0], scores1_sp_np[i, 1]
-                    print(inf1_np[i])
-                    print(s_idx, p_idx, o_idx, s1, s2)
-                    print(subs1_sp_np[i, 0, 0], entity_embeddings.weight[o_idx, 0].item())
+                    # print(inf1_np[i])
+                    # print(s_idx, p_idx, o_idx, s1, s2)
+                    # print(subs1_sp_np[i, 0, 0], entity_embeddings.weight[o_idx, 0].item())
 
             np.testing.assert_allclose(inf0_np, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], rtol=1e-1, atol=1e-1)
             np.testing.assert_allclose(inf1_np, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], rtol=1e-1, atol=1e-1)
@@ -781,7 +781,7 @@ def test_smart_clutrr_v7():
 
         model = NeuralKB(kernel=kernel, k=k)
 
-        indices = torch.from_numpy(np.array([predicate_to_index['p'], predicate_to_index['q']]))
+        indices = torch.LongTensor(np.array([predicate_to_index['p'], predicate_to_index['q']]))
         reformulator = SymbolicReformulator(predicate_embeddings, indices)
 
         hoppy0 = Hoppy(model, hops_lst=[(reformulator, False)], depth=0)
@@ -830,9 +830,9 @@ def test_smart_clutrr_v7():
         xp_np[8] = predicate_to_index['r']
         xo_np[8] = entity_to_index['u']
 
-        xs = torch.from_numpy(xs_np)
-        xp = torch.from_numpy(xp_np)
-        xo = torch.from_numpy(xo_np)
+        xs = torch.LongTensor(xs_np)
+        xp = torch.LongTensor(xp_np)
+        xo = torch.LongTensor(xo_np)
 
         xs_emb = entity_embeddings(xs)
         xp_emb = predicate_embeddings(xp)
@@ -894,15 +894,15 @@ def test_smart_clutrr_v7():
         np.testing.assert_allclose(inf3_np, [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], rtol=1e-1, atol=1e-1)
         # np.testing.assert_allclose(inf4_np, [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0], rtol=1e-1, atol=1e-1)
 
-        print(scores3_sp_np.shape)
-        print(scores3_sp_np[0, :])
-
-        print(inf3_np)
-
-        print(entity_embeddings.weight[entity_to_index['c'], 0].item())
-        print(entity_embeddings.weight[entity_to_index['e'], 0].item())
-        print(entity_embeddings.weight[entity_to_index['g'], 0].item())
-        print(entity_embeddings.weight[entity_to_index['i'], 0].item())
+        # print(scores3_sp_np.shape)
+        # print(scores3_sp_np[0, :])
+        #
+        # print(inf3_np)
+        #
+        # print(entity_embeddings.weight[entity_to_index['c'], 0].item())
+        # print(entity_embeddings.weight[entity_to_index['e'], 0].item())
+        # print(entity_embeddings.weight[entity_to_index['g'], 0].item())
+        # print(entity_embeddings.weight[entity_to_index['i'], 0].item())
 
 
 if __name__ == '__main__':
